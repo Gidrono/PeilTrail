@@ -23,7 +23,23 @@ Inspired by the pixel cursor trail on [github.com](https://github.com/).
 
 ## Install
 
-### Option 1: Download the app
+### Option 1: Homebrew (recommended)
+
+```bash
+brew install --cask gidrono/tap/paletrail
+open /Applications/PaleTrail.app
+```
+
+That's it, with no Gatekeeper prompt. To update or remove it later:
+
+```bash
+brew upgrade --cask paletrail
+brew uninstall --cask paletrail
+```
+
+The cask lives in [Gidrono/homebrew-tap](https://github.com/Gidrono/homebrew-tap).
+
+### Option 2: Download the app
 
 1. Download **[PaleTrail.zip](https://github.com/Gidrono/paletrail/releases/latest/download/PaleTrail.zip)** from the [latest release](https://github.com/Gidrono/paletrail/releases/latest).
 2. Unzip it and drag **PaleTrail.app** into your **Applications** folder.
@@ -47,7 +63,7 @@ xattr -dr com.apple.quarantine /Applications/PaleTrail.app
 open /Applications/PaleTrail.app
 ```
 
-### Option 2: Build from source
+### Option 3: Build from source
 
 Requires macOS 13+ and Xcode (or the Xcode command line tools) with Swift 5.9+.
 
@@ -75,7 +91,9 @@ PaleTrail only watches mouse movement and whether ⌘ is held. It never reads wh
 
 ## Uninstall
 
-Quit PaleTrail from the menu bar, turn off Launch at Login if you enabled it, and delete `/Applications/PaleTrail.app`.
+If you installed with Homebrew, run `brew uninstall --cask paletrail` (add `--zap` to also remove its preferences).
+
+Otherwise, quit PaleTrail from the menu bar, turn off Launch at Login if you enabled it, and delete `/Applications/PaleTrail.app`.
 
 ## Customize
 
