@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
-# Builds PaleTrail in release mode and wraps it into build/PaleTrail.app.
+# Builds a universal (Apple Silicon + Intel) PaleTrail.app into build/.
+# Pass --zip to also produce build/PaleTrail.zip for releases.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
 VERSION="${VERSION:-0.1.0}"
 APP="build/PaleTrail.app"
+ARCHS=(--arch arm64 --arch x86_64)
 
-swift build -c release
-BIN_DIR="$(swift build -c release --show-bin-path)"
+swift build -c release "${ARCHS[@]}"
+BIN_DIR="$(swift build -c release "${ARCHS[@]}" --show-bin-path)"
 
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
@@ -46,3 +48,10 @@ PLIST
 codesign --force --sign - "$APP"
 
 echo "Built $APP"
+
+if [[ "${1:-}" == "--zip" ]]; then
+    ZIP="build/PaleTrail.zip"
+    rm -f "$ZIP"
+    ditto -c -k --keepParent "$APP" "$ZIP"
+    echo "Built $ZIP"
+fi
