@@ -22,16 +22,39 @@ Inspired by the pixel cursor trail on [github.com](https://github.com/).
 - Universal app for Apple Silicon and Intel Macs.
 - Menu-bar toggles for **Enabled** and **Launch at Login**.
 
+## Use cases
+
+Hold ⌘ to point things out on screen: in a Zoom or Meet screen share, a code review, a tutorial recording, or just for fun.
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/use-cases/01-screen-share-circle.gif" alt="Circling the repo name, Star button and commit count on a GitHub page"></td>
+    <td width="50%"><img src="docs/use-cases/02-code-review.gif" alt="Bracketing and circling lines of Swift code on GitHub"></td>
+  </tr>
+  <tr>
+    <td><b>Screen sharing:</b> circle buttons and underline text while you talk. <i>Neon palette.</i></td>
+    <td><b>Code review:</b> bracket a block, circle a value, underline a call. <i>Ocean palette.</i></td>
+  </tr>
+  <tr>
+    <td><img src="docs/use-cases/03-map-route.gif" alt="Tracing a route along the Seine from the Louvre to the Eiffel Tower on OpenStreetMap"></td>
+    <td><img src="docs/use-cases/04-flair.gif" alt="Circling install commands and drawing a heart and a star on a README"></td>
+  </tr>
+  <tr>
+    <td><b>Maps and walkthroughs:</b> trace a route from A to B. <i>Fire palette.</i></td>
+    <td><b>Docs and flair:</b> highlight the command to run, then draw a heart. <i>Earthy palette.</i></td>
+  </tr>
+</table>
+
 ## Install
 
-### Option 1: Homebrew (recommended)
+### Homebrew (recommended)
 
 ```bash
 brew install --cask gidrono/tap/paletrail
-open /Applications/PaleTrail.app
+open -a PaleTrail
 ```
 
-That's it. To update or remove it later:
+A grid icon appears in the menu bar. To update or remove it later:
 
 ```bash
 brew upgrade --cask paletrail
@@ -40,44 +63,33 @@ brew uninstall --cask paletrail
 
 The cask lives in [Gidrono/homebrew-tap](https://github.com/Gidrono/homebrew-tap).
 
-### Option 2: Download the app
-
-1. Download **[PaleTrail.zip](https://github.com/Gidrono/paletrail/releases/latest/download/PaleTrail.zip)** from the [latest release](https://github.com/Gidrono/paletrail/releases/latest).
-2. Unzip it and drag **PaleTrail.app** into your **Applications** folder.
-3. Open it. A grid icon appears in the menu bar.
-
-PaleTrail is signed with a Developer ID and notarized by Apple, so it opens normally with no Gatekeeper warnings.
-
-Or do all of it from Terminal:
-
-```bash
-curl -L -o /tmp/PaleTrail.zip https://github.com/Gidrono/paletrail/releases/latest/download/PaleTrail.zip
-ditto -x -k /tmp/PaleTrail.zip /Applications
-open /Applications/PaleTrail.app
-```
-
-### Option 3: Build from source
+### Build from source
 
 Requires macOS 13+ and Xcode (or the Xcode command line tools) with Swift 5.9+.
 
 ```bash
 git clone https://github.com/Gidrono/paletrail.git
 cd paletrail
-./scripts/bundle.sh            # builds build/PaleTrail.app (universal, ad-hoc signed)
+./scripts/bundle.sh                     # builds build/PaleTrail.app (universal)
 cp -R build/PaleTrail.app /Applications/
-open /Applications/PaleTrail.app
+open -a PaleTrail
 ```
 
-For a quick dev run without bundling, use `swift run`.
+To try it without installing, run `swift run` from the repo instead. PaleTrail keeps running until you quit it from the menu bar or press Ctrl-C in Terminal.
+
+### Download the app
+
+Download **[PaleTrail.zip](https://github.com/Gidrono/paletrail/releases/latest/download/PaleTrail.zip)** from the [latest release](https://github.com/Gidrono/paletrail/releases/latest), unzip it, drag **PaleTrail.app** into **Applications**, and open it. The app is signed and notarized by Apple, so it opens without Gatekeeper warnings.
 
 ## Usage
 
-- **Hold ⌘ and move the mouse** to draw the trail.
+- **Hold ⌘ and move the mouse** to draw the trail. Let go of ⌘ before you click, since many apps treat ⌘-click as a different action.
 - Click the grid icon in the menu bar to:
   - toggle **Enabled** on or off,
   - turn on **Launch at Login** (only works when running from `/Applications`),
   - choose a **Palette** (each option shows its colours as a row of squares),
   - **Quit**.
+- **Screen sharing:** the trail shows up in Zoom, Meet and screen recordings. Share your whole screen rather than a single window, because the trail is drawn in its own overlay window.
 
 ## Permissions
 
