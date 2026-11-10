@@ -13,7 +13,8 @@ Inspired by the pixel cursor trail on [github.com](https://github.com/).
 
 ## Features
 
-- Hold ⌘ and move the mouse to leave a trail of grid-snapped squares in GitHub's green, blue, purple and pink. Let go and the trail fades away.
+- Hold ⌘ and move the mouse to leave a trail of grid-snapped squares (GitHub's green, blue, purple and pink by default). Let go and the trail fades away.
+- Pick from 8 colour palettes in the menu bar: GitHub (default), Earthy, Sunset, Fire, Ocean, Forest, Neon and Pastel.
 - Squares fade and shrink after ~600 ms, with small "sparkle" squares scattered around the path.
 - Works on every display and Space, including over full-screen apps.
 - Click-through overlay: it never steals clicks or focus.
@@ -30,7 +31,7 @@ brew install --cask gidrono/tap/paletrail
 open /Applications/PaleTrail.app
 ```
 
-That's it, with no Gatekeeper prompt. To update or remove it later:
+That's it. To update or remove it later:
 
 ```bash
 brew upgrade --cask paletrail
@@ -45,21 +46,13 @@ The cask lives in [Gidrono/homebrew-tap](https://github.com/Gidrono/homebrew-tap
 2. Unzip it and drag **PaleTrail.app** into your **Applications** folder.
 3. Open it. A grid icon appears in the menu bar.
 
-PaleTrail isn't notarized by Apple yet, so the first time you open it macOS will say it can't verify the developer. To allow it, do one of these:
-
-- Go to **System Settings > Privacy & Security**, scroll down, and click **Open Anyway** next to the PaleTrail message.
-- Or run this once in Terminal:
-
-  ```bash
-  xattr -dr com.apple.quarantine /Applications/PaleTrail.app
-  ```
+PaleTrail is signed with a Developer ID and notarized by Apple, so it opens normally with no Gatekeeper warnings.
 
 Or do all of it from Terminal:
 
 ```bash
 curl -L -o /tmp/PaleTrail.zip https://github.com/Gidrono/paletrail/releases/latest/download/PaleTrail.zip
 ditto -x -k /tmp/PaleTrail.zip /Applications
-xattr -dr com.apple.quarantine /Applications/PaleTrail.app
 open /Applications/PaleTrail.app
 ```
 
@@ -70,7 +63,7 @@ Requires macOS 13+ and Xcode (or the Xcode command line tools) with Swift 5.9+.
 ```bash
 git clone https://github.com/Gidrono/paletrail.git
 cd paletrail
-./scripts/bundle.sh            # builds build/PaleTrail.app (universal)
+./scripts/bundle.sh            # builds build/PaleTrail.app (universal, ad-hoc signed)
 cp -R build/PaleTrail.app /Applications/
 open /Applications/PaleTrail.app
 ```
@@ -83,6 +76,7 @@ For a quick dev run without bundling, use `swift run`.
 - Click the grid icon in the menu bar to:
   - toggle **Enabled** on or off,
   - turn on **Launch at Login** (only works when running from `/Applications`),
+  - choose a **Palette** (each option shows its colours as a row of squares),
   - **Quit**.
 
 ## Permissions
@@ -102,7 +96,7 @@ All the knobs are plain constants:
 | What | Where |
 | --- | --- |
 | Grid size, trail lifetime, sparkle amount | top of `Sources/PaleTrail/TrailController.swift` |
-| Colors | `Palette` in `Sources/PaleTrail/TrailView.swift` |
+| Colors and palettes | `Palette.all` in `Sources/PaleTrail/TrailView.swift` |
 
 ## How it works
 
@@ -113,9 +107,20 @@ All the knobs are plain constants:
 | `TrailView.swift` | Spawns a `CALayer` per cell with a fade and shrink animation, and removes it when the animation completes. |
 | `AppDelegate.swift` | Menu-bar item, settings, and Launch at Login via `SMAppService`. |
 
+## Releasing (maintainers)
+
+With a Developer ID Application certificate in the keychain and a notarytool profile saved via `xcrun notarytool store-credentials paletrail`:
+
+```bash
+VERSION=X.Y.Z ./scripts/bundle.sh --notarize   # signs, notarizes, staples, zips
+gh release create vX.Y.Z build/PaleTrail.zip
+```
+
+Then bump `version` and `sha256` in the [Homebrew cask](https://github.com/Gidrono/homebrew-tap/blob/main/Casks/paletrail.rb).
+
 ## Contributing
 
-Issues and pull requests are welcome! Ideas: more palettes and trail styles, a settings window, a configurable modifier key.
+Issues and pull requests are welcome! Ideas: more trail styles, a settings window, a configurable modifier key.
 
 ## License
 

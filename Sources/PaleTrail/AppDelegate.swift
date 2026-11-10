@@ -4,6 +4,7 @@ import ServiceManagement
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private static let enabledKey = "PaleTrailEnabled"
+    private static let paletteKey = "PaleTrailPalette"
 
     private var statusItem: NSStatusItem!
     private var overlays: OverlayManager!
@@ -11,9 +12,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private let enabledItem = NSMenuItem(title: "Enabled", action: #selector(toggleEnabled), keyEquivalent: "")
     private let loginItem = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
+    private var paletteItems: [NSMenuItem] = []
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        UserDefaults.standard.register(defaults: [Self.enabledKey: true])
+        UserDefaults.standard.register(defaults: [
+            Self.enabledKey: true,
+            Self.paletteKey: Palette.github.id,
+        ])
+        let savedPalette = UserDefaults.standard.string(forKey: Self.paletteKey) ?? ""
+        Palette.current = Palette.named(savedPalette) ?? .github
 
         overlays = OverlayManager()
         controller = TrailController(overlays: overlays)
@@ -45,6 +52,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(enabledItem)
         loginItem.target = self
         menu.addItem(loginItem)
+
+        let paletteMenu = NSMenu()
+        for palette in Palette.all {
+            let item = NSMenuItem(title: palette.name, action: #selector(selectPalette(_:)), keyEquivalent: "")
+            item.target = self
+            item.image = swatchImage(for: palette)
+            item.representedObject = palette.id
+            paletteMenu.addItem(item)
+            paletteItems.append(item)
+        }
+        let paletteItem = NSMenuItem(title: "Palette", action: nil, keyEquivalent: "")
+        paletteItem.submenu = paletteMenu
+        menu.addItem(paletteItem)
         menu.addItem(.separator())
 
         let about = NSMenuItem(title: "About PaleTrail", action: #selector(openRepo), keyEquivalent: "")
@@ -59,6 +79,38 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func refreshMenuState() {
         enabledItem.state = controller.isEnabled ? .on : .off
         loginItem.state = SMAppService.mainApp.status == .enabled ? .on : .off
+        for item in paletteItems {
+            item.state = item.representedObject as? String == Palette.current.id ? .on : .off
+        }
+    }
+
+    private func swatchImage(for palette: Palette) -> NSImage {
+        let square: CGFloat = 12
+        let gap: CGFloat = 2
+        let count = CGFloat(palette.colors.count)
+        let size = NSSize(width: count * square + (count - 1) * gap, height: square)
+        let image = NSImage(size: size, flipped: false) { _ in
+            for (index, color) in palette.colors.enumerated() {
+                let rect = NSRect(x: CGFloat(index) * (square + gap), y: 0, width: square, height: square)
+                let path = NSBezierPath(roundedRect: rect.insetBy(dx: 0.5, dy: 0.5), xRadius: 2, yRadius: 2)
+                color.setFill()
+                path.fill()
+                // Keeps very light colours (e.g. oatmeal) visible on a light menu.
+                NSColor.black.withAlphaComponent(0.15).setStroke()
+                path.lineWidth = 1
+                path.stroke()
+            }
+            return true
+        }
+        image.isTemplate = false
+        return image
+    }
+
+    @objc private func selectPalette(_ sender: NSMenuItem) {
+        guard let id = sender.representedObject as? String, let palette = Palette.named(id) else { return }
+        Palette.current = palette
+        UserDefaults.standard.set(palette.id, forKey: Self.paletteKey)
+        refreshMenuState()
     }
 
     @objc private func toggleEnabled() {
