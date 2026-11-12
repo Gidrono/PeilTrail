@@ -65,7 +65,7 @@ The cask lives in [Gidrono/homebrew-tap](https://github.com/Gidrono/homebrew-tap
 
 ### Build from source
 
-Requires macOS 13+ and Xcode (or the Xcode command line tools) with Swift 5.9+.
+Requires macOS 13+ and Swift 5.9+. Full Xcode isn't needed: the Command Line Tools 15+ are enough (`xcode-select --install`).
 
 ```bash
 git clone https://github.com/Gidrono/paletrail.git

@@ -16,7 +16,7 @@ cd "$(dirname "$0")/.."
 VERSION="${VERSION:-0.1.1}"
 APP="build/PaleTrail.app"
 ZIP="build/PaleTrail.zip"
-ARCHS=(--arch arm64 --arch x86_64)
+ARCHS=(arm64 x86_64)
 NOTARY_PROFILE="${NOTARY_PROFILE:-paletrail}"
 MODE="${1:-}"
 
@@ -29,12 +29,17 @@ if [[ "$MODE" == "--notarize" && -z "$SIGN_IDENTITY" ]]; then
     exit 1
 fi
 
-swift build -c release "${ARCHS[@]}"
-BIN_DIR="$(swift build -c release "${ARCHS[@]}" --show-bin-path)"
+# One build per arch, merged with lipo: passing several --arch flags to a single
+# `swift build` needs xcbuild, which only ships with full Xcode.
+BINARIES=()
+for arch in "${ARCHS[@]}"; do
+    swift build -c release --arch "$arch"
+    BINARIES+=("$(swift build -c release --arch "$arch" --show-bin-path)/PaleTrail")
+done
 
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp "$BIN_DIR/PaleTrail" "$APP/Contents/MacOS/PaleTrail"
+lipo -create -output "$APP/Contents/MacOS/PaleTrail" "${BINARIES[@]}"
 
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
