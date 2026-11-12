@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-macOS%2013%2B-blue)
 ![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange)
-[![Latest release](https://img.shields.io/github/v/release/Gidrono/peiltrail)](https://github.com/Gidrono/peiltrail/releases/latest)
+[![Latest release](https://img.shields.io/github/v/release/Gidrono/PeilTrail)](https://github.com/Gidrono/PeilTrail/releases/latest)
 
 A tiny macOS menu-bar app that paints a GitHub-style trail of colorful pixel squares behind your cursor while you hold **⌘ Command**.
 
@@ -70,8 +70,8 @@ The cask lives in [Gidrono/homebrew-tap](https://github.com/Gidrono/homebrew-tap
 Requires macOS 13+ and Swift 5.9+. Full Xcode isn't needed: the Command Line Tools 15+ are enough (`xcode-select --install`).
 
 ```bash
-git clone https://github.com/Gidrono/peiltrail.git
-cd peiltrail
+git clone https://github.com/Gidrono/PeilTrail.git
+cd PeilTrail
 ./scripts/bundle.sh                     # builds build/PeilTrail.app (universal)
 cp -R build/PeilTrail.app /Applications/
 open -a PeilTrail
@@ -81,7 +81,7 @@ To try it without installing, run `swift run` from the repo instead. PeilTrail k
 
 ### Download the app
 
-Download **[PeilTrail.zip](https://github.com/Gidrono/peiltrail/releases/latest/download/PeilTrail.zip)** from the [latest release](https://github.com/Gidrono/peiltrail/releases/latest), unzip it, drag **PeilTrail.app** into **Applications**, and open it. The app is signed and notarized by Apple, so it opens without Gatekeeper warnings.
+Download **[PeilTrail.zip](https://github.com/Gidrono/PeilTrail/releases/latest/download/PeilTrail.zip)** from the [latest release](https://github.com/Gidrono/PeilTrail/releases/latest), unzip it, drag **PeilTrail.app** into **Applications**, and open it. The app is signed and notarized by Apple, so it opens without Gatekeeper warnings.
 
 ## Usage
 

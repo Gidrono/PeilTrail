@@ -153,7 +153,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func openRepo() {
-        if let url = URL(string: "https://github.com/Gidrono/peiltrail") {
+        if let url = URL(string: "https://github.com/Gidrono/PeilTrail") {
             NSWorkspace.shared.open(url)
         }
     }
