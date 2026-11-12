@@ -3,8 +3,8 @@ import ServiceManagement
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    private static let enabledKey = "PaleTrailEnabled"
-    private static let paletteKey = "PaleTrailPalette"
+    private static let enabledKey = "PeilTrailEnabled"
+    private static let paletteKey = "PeilTrailPalette"
 
     private var statusItem: NSStatusItem!
     private var overlays: OverlayManager!
@@ -15,6 +15,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var paletteItems: [NSMenuItem] = []
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        migrateLegacyDefaults()
         UserDefaults.standard.register(defaults: [
             Self.enabledKey: true,
             Self.paletteKey: Palette.github.id,
@@ -30,6 +31,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setUpStatusItem()
     }
 
+    /// Copies settings saved by PaleTrail (the app's previous name and bundle ID).
+    private func migrateLegacyDefaults() {
+        let defaults = UserDefaults.standard
+        guard let legacy = UserDefaults(suiteName: "com.gidrono.paletrail") else { return }
+        if defaults.object(forKey: Self.enabledKey) == nil,
+           let enabled = legacy.object(forKey: "PaleTrailEnabled") as? Bool {
+            defaults.set(enabled, forKey: Self.enabledKey)
+        }
+        if defaults.object(forKey: Self.paletteKey) == nil,
+           let palette = legacy.string(forKey: "PaleTrailPalette") {
+            defaults.set(palette, forKey: Self.paletteKey)
+        }
+    }
+
     func applicationWillTerminate(_ notification: Notification) {
         controller?.stop()
     }
@@ -37,7 +52,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func setUpStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = statusItem.button {
-            let image = NSImage(systemSymbolName: "square.grid.3x3.fill", accessibilityDescription: "PaleTrail")
+            let image = NSImage(systemSymbolName: "square.grid.3x3.fill", accessibilityDescription: "PeilTrail")
             image?.isTemplate = true
             button.image = image
         }
@@ -67,10 +82,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(paletteItem)
         menu.addItem(.separator())
 
-        let about = NSMenuItem(title: "About PaleTrail", action: #selector(openRepo), keyEquivalent: "")
+        let about = NSMenuItem(title: "About PeilTrail", action: #selector(openRepo), keyEquivalent: "")
         about.target = self
         menu.addItem(about)
-        menu.addItem(NSMenuItem(title: "Quit PaleTrail", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        menu.addItem(NSMenuItem(title: "Quit PeilTrail", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
 
         statusItem.menu = menu
         refreshMenuState()
@@ -130,7 +145,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } catch {
             let alert = NSAlert()
             alert.messageText = "Couldn't change Launch at Login"
-            alert.informativeText = "\(error.localizedDescription)\n\nLaunch at Login only works when PaleTrail runs from an app bundle, ideally in /Applications."
+            alert.informativeText = "\(error.localizedDescription)\n\nLaunch at Login only works when PeilTrail runs from an app bundle, ideally in /Applications."
             NSApp.activate(ignoringOtherApps: true)
             alert.runModal()
         }
@@ -138,7 +153,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func openRepo() {
-        if let url = URL(string: "https://github.com/Gidrono/paletrail") {
+        if let url = URL(string: "https://github.com/Gidrono/peiltrail") {
             NSWorkspace.shared.open(url)
         }
     }

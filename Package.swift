@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "PaleTrail",
+    name: "PeilTrail",
     platforms: [.macOS(.v13)],
     targets: [
         .executableTarget(
-            name: "PaleTrail",
-            path: "Sources/PaleTrail"
+            name: "PeilTrail",
+            path: "Sources/PeilTrail"
         )
     ]
 )

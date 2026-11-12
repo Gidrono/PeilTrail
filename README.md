@@ -1,13 +1,13 @@
-# PaleTrail
+# PeilTrail
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-macOS%2013%2B-blue)
 ![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange)
-[![Latest release](https://img.shields.io/github/v/release/Gidrono/paletrail)](https://github.com/Gidrono/paletrail/releases/latest)
+[![Latest release](https://img.shields.io/github/v/release/Gidrono/peiltrail)](https://github.com/Gidrono/peiltrail/releases/latest)
 
 A tiny macOS menu-bar app that paints a GitHub-style trail of colorful pixel squares behind your cursor while you hold **⌘ Command**.
 
-![PaleTrail demo: holding Command and moving the mouse leaves a fading trail of colorful squares](docs/demo.gif)
+![PeilTrail demo: holding Command and moving the mouse leaves a fading trail of colorful squares](docs/demo.gif)
 
 Inspired by the pixel cursor trail on [github.com](https://github.com/).
 
@@ -47,18 +47,20 @@ Hold ⌘ to point things out on screen: in a Zoom or Meet screen share, a code r
 
 ## Install
 
+> **Upgrading from PaleTrail?** The app was renamed to PeilTrail in v0.2.0. Your palette and on/off setting carry over, but macOS treats it as a new app: re-allow it under Accessibility / Input Monitoring if needed, and turn **Launch at Login** back on. Homebrew users can just run `brew upgrade`.
+
 ### Homebrew (recommended)
 
 ```bash
-brew install --cask gidrono/tap/paletrail
-open -a PaleTrail
+brew install --cask gidrono/tap/peiltrail
+open -a PeilTrail
 ```
 
 A grid icon appears in the menu bar. To update or remove it later:
 
 ```bash
-brew upgrade --cask paletrail
-brew uninstall --cask paletrail
+brew upgrade --cask peiltrail
+brew uninstall --cask peiltrail
 ```
 
 The cask lives in [Gidrono/homebrew-tap](https://github.com/Gidrono/homebrew-tap).
@@ -68,18 +70,18 @@ The cask lives in [Gidrono/homebrew-tap](https://github.com/Gidrono/homebrew-tap
 Requires macOS 13+ and Swift 5.9+. Full Xcode isn't needed: the Command Line Tools 15+ are enough (`xcode-select --install`).
 
 ```bash
-git clone https://github.com/Gidrono/paletrail.git
-cd paletrail
-./scripts/bundle.sh                     # builds build/PaleTrail.app (universal)
-cp -R build/PaleTrail.app /Applications/
-open -a PaleTrail
+git clone https://github.com/Gidrono/peiltrail.git
+cd peiltrail
+./scripts/bundle.sh                     # builds build/PeilTrail.app (universal)
+cp -R build/PeilTrail.app /Applications/
+open -a PeilTrail
 ```
 
-To try it without installing, run `swift run` from the repo instead. PaleTrail keeps running until you quit it from the menu bar or press Ctrl-C in Terminal.
+To try it without installing, run `swift run` from the repo instead. PeilTrail keeps running until you quit it from the menu bar or press Ctrl-C in Terminal.
 
 ### Download the app
 
-Download **[PaleTrail.zip](https://github.com/Gidrono/paletrail/releases/latest/download/PaleTrail.zip)** from the [latest release](https://github.com/Gidrono/paletrail/releases/latest), unzip it, drag **PaleTrail.app** into **Applications**, and open it. The app is signed and notarized by Apple, so it opens without Gatekeeper warnings.
+Download **[PeilTrail.zip](https://github.com/Gidrono/peiltrail/releases/latest/download/PeilTrail.zip)** from the [latest release](https://github.com/Gidrono/peiltrail/releases/latest), unzip it, drag **PeilTrail.app** into **Applications**, and open it. The app is signed and notarized by Apple, so it opens without Gatekeeper warnings.
 
 ## Usage
 
@@ -93,13 +95,13 @@ Download **[PaleTrail.zip](https://github.com/Gidrono/paletrail/releases/latest/
 
 ## Permissions
 
-PaleTrail only watches mouse movement and whether ⌘ is held. It never reads what you type, so it usually needs no special permissions. If the trail doesn't show up, open **System Settings > Privacy & Security > Accessibility** (and **Input Monitoring**, if PaleTrail is listed there), allow PaleTrail, and relaunch it.
+PeilTrail only watches mouse movement and whether ⌘ is held. It never reads what you type, so it usually needs no special permissions. If the trail doesn't show up, open **System Settings > Privacy & Security > Accessibility** (and **Input Monitoring**, if PeilTrail is listed there), allow PeilTrail, and relaunch it.
 
 ## Uninstall
 
-If you installed with Homebrew, run `brew uninstall --cask paletrail` (add `--zap` to also remove its preferences).
+If you installed with Homebrew, run `brew uninstall --cask peiltrail` (add `--zap` to also remove its preferences).
 
-Otherwise, quit PaleTrail from the menu bar, turn off Launch at Login if you enabled it, and delete `/Applications/PaleTrail.app`.
+Otherwise, quit PeilTrail from the menu bar, turn off Launch at Login if you enabled it, and delete `/Applications/PeilTrail.app`.
 
 ## Customize
 
@@ -107,8 +109,8 @@ All the knobs are plain constants:
 
 | What | Where |
 | --- | --- |
-| Grid size, trail lifetime, sparkle amount | top of `Sources/PaleTrail/TrailController.swift` |
-| Colors and palettes | `Palette.all` in `Sources/PaleTrail/TrailView.swift` |
+| Grid size, trail lifetime, sparkle amount | top of `Sources/PeilTrail/TrailController.swift` |
+| Colors and palettes | `Palette.all` in `Sources/PeilTrail/TrailView.swift` |
 
 ## How it works
 
@@ -121,14 +123,14 @@ All the knobs are plain constants:
 
 ## Releasing (maintainers)
 
-With a Developer ID Application certificate in the keychain and a notarytool profile saved via `xcrun notarytool store-credentials paletrail`:
+With a Developer ID Application certificate in the keychain and a notarytool profile saved via `xcrun notarytool store-credentials peiltrail`:
 
 ```bash
 VERSION=X.Y.Z ./scripts/bundle.sh --notarize   # signs, notarizes, staples, zips
-gh release create vX.Y.Z build/PaleTrail.zip
+gh release create vX.Y.Z build/PeilTrail.zip
 ```
 
-Then bump `version` and `sha256` in the [Homebrew cask](https://github.com/Gidrono/homebrew-tap/blob/main/Casks/paletrail.rb).
+Then bump `version` and `sha256` in the [Homebrew cask](https://github.com/Gidrono/homebrew-tap/blob/main/Casks/peiltrail.rb).
 
 ## Contributing
 

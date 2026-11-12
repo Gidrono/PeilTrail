@@ -38,7 +38,7 @@ final class TrailController {
         }) {
             monitors.append(global)
         } else {
-            NSLog("PaleTrail: could not install global event monitor. Check System Settings > Privacy & Security > Accessibility / Input Monitoring.")
+            NSLog("PeilTrail: could not install global event monitor. Check System Settings > Privacy & Security > Accessibility / Input Monitoring.")
         }
         if let local = NSEvent.addLocalMonitorForEvents(matching: mask, handler: { [weak self] event in
             self?.handle(event)
