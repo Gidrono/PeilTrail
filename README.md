@@ -11,17 +11,6 @@ A tiny macOS menu-bar app that paints a GitHub-style trail of colorful pixel squ
 
 Inspired by the pixel cursor trail on [github.com](https://github.com/).
 
-## Features
-
-- Hold ⌘ and move the mouse to leave a trail of grid-snapped squares (GitHub's green, blue, purple and pink by default). Let go and the trail fades away.
-- Pick from 8 colour palettes in the menu bar: GitHub (default), Earthy, Sunset, Fire, Ocean, Forest, Neon and Pastel.
-- Squares fade and shrink after ~600 ms, with small "sparkle" squares scattered around the path.
-- Works on every display and Space, including over full-screen apps.
-- Click-through overlay: it never steals clicks or focus.
-- Zero CPU when idle: Core Animation drives the fades, so there's no frame loop.
-- Universal app for Apple Silicon and Intel Macs.
-- Menu-bar toggles for **Enabled** and **Launch at Login**.
-
 ## Use cases
 
 Hold ⌘ to point things out on screen: in a Zoom or Meet screen share, a code review, a tutorial recording, or just for fun.
@@ -45,9 +34,20 @@ Hold ⌘ to point things out on screen: in a Zoom or Meet screen share, a code r
   </tr>
 </table>
 
-## Install
 
-> **Upgrading from PaleTrail?** The app was renamed to PeilTrail in v0.2.0. Your palette and on/off setting carry over, but macOS treats it as a new app: re-allow it under Accessibility / Input Monitoring if needed, and turn **Launch at Login** back on. Homebrew users can just run `brew upgrade`.
+## Features
+
+- Hold ⌘ and move the mouse to leave a trail of grid-snapped squares (GitHub's green, blue, purple and pink by default). Let go and the trail fades away.
+- Pick from 8 colour palettes in the menu bar: GitHub (default), Earthy, Sunset, Fire, Ocean, Forest, Neon and Pastel.
+- Squares fade and shrink after ~600 ms, with small "sparkle" squares scattered around the path.
+- Works on every display and Space, including over full-screen apps.
+- Click-through overlay: it never steals clicks or focus.
+- Zero CPU when idle: Core Animation drives the fades, so there's no frame loop.
+- Universal app for Apple Silicon and Intel Macs.
+- Menu-bar toggles for **Enabled** and **Launch at Login**.
+
+
+## Install
 
 ### Homebrew (recommended)
 
@@ -67,7 +67,7 @@ The cask lives in [Gidrono/homebrew-tap](https://github.com/Gidrono/homebrew-tap
 
 ### Build from source
 
-Requires macOS 13+ and Swift 5.9+. Full Xcode isn't needed: the Command Line Tools 15+ are enough (`xcode-select --install`).
+Requires macOS 13+ and Swift 5.9+.
 
 ```bash
 git clone https://github.com/Gidrono/PeilTrail.git
@@ -103,23 +103,6 @@ If you installed with Homebrew, run `brew uninstall --cask peiltrail` (add `--za
 
 Otherwise, quit PeilTrail from the menu bar, turn off Launch at Login if you enabled it, and delete `/Applications/PeilTrail.app`.
 
-## Customize
-
-All the knobs are plain constants:
-
-| What | Where |
-| --- | --- |
-| Grid size, trail lifetime, sparkle amount | top of `Sources/PeilTrail/TrailController.swift` |
-| Colors and palettes | `Palette.all` in `Sources/PeilTrail/TrailView.swift` |
-
-## How it works
-
-| File | Role |
-| --- | --- |
-| `TrailController.swift` | Global `NSEvent` monitors. While ⌘ is held, it interpolates grid cells between successive cursor positions so fast moves don't leave gaps. |
-| `OverlayWindow.swift` | One borderless, transparent, click-through window per screen, at screen-saver level, on all Spaces. |
-| `TrailView.swift` | Spawns a `CALayer` per cell with a fade and shrink animation, and removes it when the animation completes. |
-| `AppDelegate.swift` | Menu-bar item, settings, and Launch at Login via `SMAppService`. |
 
 ## Releasing (maintainers)
 
@@ -132,9 +115,6 @@ gh release create vX.Y.Z build/PeilTrail.zip
 
 Then bump `version` and `sha256` in the [Homebrew cask](https://github.com/Gidrono/homebrew-tap/blob/main/Casks/peiltrail.rb).
 
-## Contributing
-
-Issues and pull requests are welcome! Ideas: more trail styles, a settings window, a configurable modifier key.
 
 ## License
 
