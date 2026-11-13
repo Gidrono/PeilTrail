@@ -5,7 +5,7 @@
 ![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange)
 [![Latest release](https://img.shields.io/github/v/release/Gidrono/PeilTrail)](https://github.com/Gidrono/PeilTrail/releases/latest)
 
-A tiny macOS menu-bar app that paints a GitHub-style trail of colorful pixel squares behind your cursor while you hold **⌘ Command**.
+A tiny macOS menu-bar app that paints a trail of colorful pixel squares behind your cursor while you hold **⌘ Command**.
 
 ![PeilTrail demo: holding Command and moving the mouse leaves a fading trail of colorful squares](docs/demo.gif)
 
