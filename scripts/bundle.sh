@@ -41,6 +41,17 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 lipo -create -output "$APP/Contents/MacOS/PeilTrail" "${BINARIES[@]}"
 
+# App icon: prefer iconutil from the committed iconset when available (macOS),
+# otherwise ship the prebuilt Resources/AppIcon.icns.
+ICONSET="Resources/AppIcon.iconset"
+ICNS_SRC="Resources/AppIcon.icns"
+ICNS_DST="$APP/Contents/Resources/AppIcon.icns"
+if [[ -d "$ICONSET" ]] && command -v iconutil >/dev/null 2>&1; then
+    iconutil -c icns "$ICONSET" -o "$ICNS_DST"
+else
+    cp "$ICNS_SRC" "$ICNS_DST"
+fi
+
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -56,10 +67,16 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <string>PeilTrail</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundleIconName</key>
+    <string>AppIcon</string>
     <key>CFBundleShortVersionString</key>
     <string>${VERSION}</string>
     <key>CFBundleVersion</key>
     <string>${VERSION}</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.utilities</string>
     <key>LSMinimumSystemVersion</key>
     <string>13.0</string>
     <key>LSUIElement</key>
@@ -70,6 +87,8 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 </plist>
 PLIST
 
+# Homebrew / Developer ID path: do not apply PeilTrail.entitlements (App Sandbox).
+# Sandboxed App Store signing is documented in docs/APP_STORE.md.
 if [[ -n "$SIGN_IDENTITY" ]]; then
     codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" "$APP"
     echo "Signed with: $SIGN_IDENTITY"

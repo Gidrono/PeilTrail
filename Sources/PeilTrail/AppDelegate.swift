@@ -18,10 +18,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         migrateLegacyDefaults()
         UserDefaults.standard.register(defaults: [
             Self.enabledKey: true,
-            Self.paletteKey: Palette.github.id,
+            Self.paletteKey: Palette.classic.id,
         ])
         let savedPalette = UserDefaults.standard.string(forKey: Self.paletteKey) ?? ""
-        Palette.current = Palette.named(savedPalette) ?? .github
+        Palette.current = Palette.named(savedPalette) ?? .classic
 
         overlays = OverlayManager()
         controller = TrailController(overlays: overlays)
