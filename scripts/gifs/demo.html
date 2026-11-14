@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PeilTrail</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+  h1 { position: absolute; top: 36px; left: 42px; margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.3px; }
+  p { position: absolute; top: 74px; left: 44px; margin: 0; font-size: 13px; color: #8b949e; }
+  .key {
+    position: absolute; top: 40px; right: 48px;
+    width: 72px; height: 56px; border-radius: 10px;
+    display: grid; place-items: center;
+    font-size: 24px; color: #8b949e;
+    background: #21262d; border: 1px solid #30363d;
+    box-shadow: 0 2px 0 #010409;
+    transition: background 80ms, color 80ms, border-color 80ms, transform 80ms;
+  }
+  .key.down {
+    background: #1f6feb; border-color: #58a6ff; color: #fff;
+    transform: translateY(1px); box-shadow: 0 1px 0 #010409;
+  }
+</style>
+</head>
+<body>
+  <h1>PeilTrail</h1>
+  <p>Hold ⌘ and move the mouse</p>
+  <div class="key" id="key">⌘</div>
+  <script>
+    const key = document.getElementById("key");
+    const sync = (e) => key.classList.toggle("down", e.metaKey);
+    addEventListener("keydown", sync);
+    addEventListener("keyup", sync);
+    addEventListener("mousemove", sync);
+    addEventListener("blur", () => key.classList.remove("down"));
+  </script>
+</body>
+</html>
