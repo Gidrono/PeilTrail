@@ -17,12 +17,12 @@ Hold ⌘ to point things out on screen: in a Zoom or Meet screen share, a code r
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/use-cases/01-screen-share-circle.gif" alt="Circling the repo name, Star button and commit count on a GitHub page"></td>
-    <td width="50%"><img src="docs/use-cases/02-code-review.gif" alt="Bracketing and circling lines of Swift code on GitHub"></td>
+    <td width="50%"><img src="docs/use-cases/01-screen-share-circle.gif" alt="Circling the repo name, Star button, commit count and description on a GitHub page"></td>
+    <td width="50%"><img src="docs/use-cases/02-code-review.gif" alt="Bracketing, circling and underlining lines of Swift code on GitHub"></td>
   </tr>
   <tr>
-    <td><b>Screen sharing:</b> circle buttons and underline text while you talk. <i>Neon palette.</i></td>
-    <td><b>Code review:</b> bracket a block, circle a value, underline a call. <i>Ocean palette.</i></td>
+    <td><b>Screen sharing:</b> circle buttons and text while you talk. <i>Neon palette.</i></td>
+    <td><b>Code review:</b> bracket a block, circle a value, underline a line. <i>Ocean palette.</i></td>
   </tr>
   <tr>
     <td><img src="docs/use-cases/03-map-route.gif" alt="Tracing a route along the Seine from the Louvre to the Eiffel Tower on OpenStreetMap"></td>
