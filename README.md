@@ -21,7 +21,7 @@ Hold ⌘ to point things out on screen: in a Zoom or Meet screen share, a code r
     <td width="50%"><img src="docs/use-cases/02-code-review.gif" alt="Bracketing, circling and underlining lines of Swift code on GitHub"></td>
   </tr>
   <tr>
-    <td><b>Screen sharing:</b> circle buttons and text while you talk. <i>Neon palette.</i></td>
+    <td><b>Screen sharing:</b> circle buttons and text while you talk. <i>Fire palette.</i></td>
     <td><b>Code review:</b> bracket a block, circle a value, underline a line. <i>Fire palette.</i></td>
   </tr>
   <tr>
