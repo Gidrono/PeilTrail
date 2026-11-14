@@ -13,7 +13,8 @@ struct Palette {
         self.colors = hex.map { NSColor(hex: $0) }
     }
 
-    static let github = Palette(id: "github", name: "GitHub", hex: [
+    /// Stored id remains `github` so existing UserDefaults keep working.
+    static let classic = Palette(id: "github", name: "Classic", hex: [
         0x39D353, 0x2F81F7, 0xA371F7, 0xDB61A2, 0x26A641,
     ])
     static let earthy = Palette(id: "earthy", name: "Earthy", hex: [
@@ -38,8 +39,8 @@ struct Palette {
         0xFFADAD, 0xFFD6A5, 0xFDFFB6, 0xCAFFBF, 0x9BF6FF, 0xA0C4FF, 0xBDB2FF,
     ])
 
-    static let all: [Palette] = [github, earthy, sunset, fire, ocean, forest, neon, pastel]
-    static var current: Palette = github
+    static let all: [Palette] = [classic, earthy, sunset, fire, ocean, forest, neon, pastel]
+    static var current: Palette = classic
 
     static func named(_ id: String) -> Palette? {
         all.first { $0.id == id }

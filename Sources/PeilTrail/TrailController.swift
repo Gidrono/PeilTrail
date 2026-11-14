@@ -8,11 +8,18 @@ private struct GridPoint: Hashable {
 @MainActor
 final class TrailController {
     var isEnabled = true {
-        didSet { if !isEnabled { lastPoint = nil } }
+        didSet {
+            if !isEnabled {
+                lastPoint = nil
+                stopMousePolling()
+            }
+        }
     }
 
     private let overlays: OverlayManager
-    private var monitors: [Any] = []
+    private var localMonitor: Any?
+    private var flagsTimer: Timer?
+    private var mouseTimer: Timer?
     private var lastPoint: NSPoint?
     private var lastSpawn: [GridPoint: CFTimeInterval] = [:]
 
@@ -25,41 +32,100 @@ final class TrailController {
     /// Jumps longer than this (e.g. warping across displays) aren't interpolated.
     private let maxInterpolatedDistance: CGFloat = 1500
 
+    /// Low-rate poll for ⌘ while idle. Avoids Accessibility / global monitors
+    /// (incompatible with App Sandbox) and keeps CPU near zero when not drawing.
+    private let flagsPollInterval: TimeInterval = 0.1
+    /// Display-rate poll for mouse location while ⌘ is held.
+    private let mousePollInterval: TimeInterval = 1.0 / 60.0
+
     init(overlays: OverlayManager) {
         self.overlays = overlays
     }
 
     func start() {
+        // Local monitor still covers events delivered to this process (e.g. while
+        // a menu is open). Global monitors need Accessibility and are unavailable
+        // in the App Sandbox, so background drawing uses polling instead.
         let mask: NSEvent.EventTypeMask = [
             .mouseMoved, .leftMouseDragged, .rightMouseDragged, .otherMouseDragged, .flagsChanged,
         ]
-        if let global = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: { [weak self] event in
-            self?.handle(event)
-        }) {
-            monitors.append(global)
-        } else {
-            NSLog("PeilTrail: could not install global event monitor. Check System Settings > Privacy & Security > Accessibility / Input Monitoring.")
-        }
-        if let local = NSEvent.addLocalMonitorForEvents(matching: mask, handler: { [weak self] event in
+        localMonitor = NSEvent.addLocalMonitorForEvents(matching: mask) { [weak self] event in
             self?.handle(event)
             return event
-        }) {
-            monitors.append(local)
         }
+
+        let flags = Timer(timeInterval: flagsPollInterval, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.pollCommandKey() }
+        }
+        flags.tolerance = flagsPollInterval * 0.25
+        RunLoop.main.add(flags, forMode: .common)
+        flagsTimer = flags
     }
 
     func stop() {
-        monitors.forEach(NSEvent.removeMonitor)
-        monitors.removeAll()
+        if let localMonitor {
+            NSEvent.removeMonitor(localMonitor)
+            self.localMonitor = nil
+        }
+        flagsTimer?.invalidate()
+        flagsTimer = nil
+        stopMousePolling()
+    }
+
+    /// While ⌘ is down, raise the poll rate to track the cursor; otherwise stay
+    /// on the cheap flags-only timer. Trade-off vs a global monitor: at most
+    /// ~100 ms latency to notice ⌘, and ~60 Hz sampling (not every OS mouse event)
+    /// while drawing — fine for a 12 px grid trail.
+    private func pollCommandKey() {
+        guard isEnabled, NSEvent.modifierFlags.contains(.command) else {
+            lastPoint = nil
+            stopMousePolling()
+            return
+        }
+        if mouseTimer == nil {
+            startMousePollingIfNeeded()
+            pollMouse()
+        }
+    }
+
+    private func startMousePollingIfNeeded() {
+        guard mouseTimer == nil else { return }
+        let mouse = Timer(timeInterval: mousePollInterval, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.pollMouse() }
+        }
+        mouse.tolerance = mousePollInterval * 0.2
+        RunLoop.main.add(mouse, forMode: .common)
+        mouseTimer = mouse
+    }
+
+    private func stopMousePolling() {
+        mouseTimer?.invalidate()
+        mouseTimer = nil
+    }
+
+    private func pollMouse() {
+        guard isEnabled, NSEvent.modifierFlags.contains(.command) else {
+            lastPoint = nil
+            stopMousePolling()
+            return
+        }
+        let point = NSEvent.mouseLocation
+        if let lastPoint, lastPoint.x == point.x, lastPoint.y == point.y {
+            return
+        }
+        trace(from: lastPoint ?? point, to: point)
+        lastPoint = point
     }
 
     private func handle(_ event: NSEvent) {
         // NSEvent.modifierFlags reflects the live hardware state, which is more
-        // reliable than the flags attached to globally observed mouse events.
+        // reliable than the flags attached to locally observed mouse events.
         guard isEnabled, NSEvent.modifierFlags.contains(.command) else {
             lastPoint = nil
+            stopMousePolling()
             return
         }
+        startMousePollingIfNeeded()
         guard event.type != .flagsChanged else { return }
 
         let point = NSEvent.mouseLocation
