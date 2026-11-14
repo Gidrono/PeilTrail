@@ -7,6 +7,7 @@
 #   width/height are the GIF size in points; the window content is placed at
 #   (WIN_X + 10, WIN_Y + TITLEBAR + 10) on screen, which steps.json must match.
 #   pre-steps.json (optional) runs before recording starts, e.g. to scroll.
+#   DARK=1 asks pages for their dark colour scheme.
 #   Chrome keeps per-site zoom in $PROFILE; run zoom.json once against
 #   github.com so it renders at 75% and shows its full desktop layout.
 #
@@ -50,7 +51,9 @@ restart_peiltrail "$PALETTE"
 
 pkill -f "user-data-dir=$PROFILE" >/dev/null 2>&1 || true
 sleep 0.5
-"$CHROME" --user-data-dir="$PROFILE" --no-first-run --no-default-browser-check \
+THEME=()
+[[ ${DARK:-0} == 1 ]] && THEME=(--force-dark-mode --blink-settings=preferredColorScheme=0)
+"$CHROME" --user-data-dir="$PROFILE" --no-first-run --no-default-browser-check ${THEME[@]+"${THEME[@]}"} \
     --disable-features=Translate,ChromeWhatsNewUI --hide-crash-restore-bubble \
     --app="$URL" --window-position=$WIN_X,$WIN_Y \
     --window-size=$((W + 2 * INSET)),$((H + 2 * INSET + TITLEBAR)) >"$WORK/chrome.log" 2>&1 &

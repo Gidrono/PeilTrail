@@ -22,7 +22,7 @@ Hold ⌘ to point things out on screen: in a Zoom or Meet screen share, a code r
   </tr>
   <tr>
     <td><b>Screen sharing:</b> circle buttons and text while you talk. <i>Neon palette.</i></td>
-    <td><b>Code review:</b> bracket a block, circle a value, underline a line. <i>Ocean palette.</i></td>
+    <td><b>Code review:</b> bracket a block, circle a value, underline a line. <i>Fire palette.</i></td>
   </tr>
   <tr>
     <td><img src="docs/use-cases/03-map-route.gif" alt="Tracing a route along the Seine from the Louvre to the Eiffel Tower on OpenStreetMap"></td>
